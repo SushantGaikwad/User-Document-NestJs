@@ -2,14 +2,13 @@ import { Test } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { testDatabaseConfig } from './test-database';
+import { TestHelpers } from './helpers/test-helpers';
 
 describe('Database Connection', () => {
   let dataSource: DataSource;
 
   beforeAll(async () => {
-    const module = await Test.createTestingModule({
-      imports: [TypeOrmModule.forRoot(testDatabaseConfig)],
-    }).compile();
+    const module = await TestHelpers.createTestingModule();
 
     dataSource = module.get<DataSource>(DataSource);
   });

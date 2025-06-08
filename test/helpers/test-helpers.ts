@@ -12,7 +12,7 @@ import { INestApplication } from '@nestjs/common';
 
 export class TestHelpers {
   static async createTestingModule(
-    modules: any[],
+    modules: any[] = [],
     providers: any[] = [],
   ): Promise<TestingModule> {
     return Test.createTestingModule({
@@ -28,10 +28,10 @@ export class TestHelpers {
   // Updated method to handle foreign key constraints properly
   static async cleanDatabase(dataSource: DataSource): Promise<void> {
     const entities = dataSource.entityMetadatas;
-    
+
     // Disable foreign key checks temporarily
     await dataSource.query('SET session_replication_role = replica;');
-    
+
     try {
       // Delete data from all tables in reverse order to handle dependencies
       for (const entity of entities.reverse()) {
@@ -47,10 +47,12 @@ export class TestHelpers {
   // Alternative method using TRUNCATE CASCADE (more aggressive)
   static async truncateAllTables(dataSource: DataSource): Promise<void> {
     const entities = dataSource.entityMetadatas;
-    
+
     for (const entity of entities) {
       const tableName = entity.tableName;
-      await dataSource.query(`TRUNCATE TABLE "${tableName}" RESTART IDENTITY CASCADE;`);
+      await dataSource.query(
+        `TRUNCATE TABLE "${tableName}" RESTART IDENTITY CASCADE;`,
+      );
     }
   }
 
@@ -58,7 +60,7 @@ export class TestHelpers {
   static async cleanTablesInOrder(dataSource: DataSource): Promise<void> {
     // Clean tables in order to avoid foreign key constraint violations
     const tableOrder = ['ingestion', 'document', 'user']; // Adjust based on your schema
-    
+
     for (const tableName of tableOrder) {
       await dataSource.query(`DELETE FROM "${tableName}";`);
     }
@@ -69,14 +71,14 @@ export class TestHelpers {
     overrides: Partial<User> = {},
   ): Promise<User> {
     const hashedPassword = await bcrypt.hash('password123', 10);
-    
+
     const user = userRepository.create({
       email: 'test@example.com',
       password: hashedPassword,
       firstName: 'Test',
       lastName: 'User',
       role: UserRole.VIEWER,
-      ...overrides,
+      ...overrides
     });
 
     return userRepository.save(user);
@@ -93,7 +95,7 @@ export class TestHelpers {
       mimeType: 'text/plain',
       size: 1024,
       uploadedBy: user,
-      ...overrides,
+      ...overrides
     });
 
     return documentRepository.save(document);
@@ -107,12 +109,16 @@ export class TestHelpers {
     });
   }
 
-  static async getAuthToken(app: INestApplication, email: string, password: string): Promise<string> {
-  const response = await request(app.getHttpServer())
-    .post('/auth/login')
-    .send({ email, password })
-    .expect(200);
-    
-  return response.body.data?.access_token || response.body.access_token;
-}
+  static async getAuthToken(
+    app: INestApplication,
+    email: string,
+    password: string,
+  ): Promise<string> {
+    const response = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({ email, password })
+      .expect(200);
+
+    return response.body.data?.access_token || response.body.access_token;
+  }
 }
