@@ -2,12 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
-
+import * as request from 'supertest';
 import * as bcrypt from 'bcryptjs';
 import { testDatabaseConfig } from '../test-database';
 import { Document } from '../../src/common/entities/document.entity';
 import { User } from '../../src/common/entities/user.entity';
 import { UserRole } from '../../src/common/enums/user-role.enum';
+import { INestApplication } from '@nestjs/common';
 
 export class TestHelpers {
   static async createTestingModule(
@@ -105,4 +106,13 @@ export class TestHelpers {
       role: user.role,
     });
   }
+
+  static async getAuthToken(app: INestApplication, email: string, password: string): Promise<string> {
+  const response = await request(app.getHttpServer())
+    .post('/auth/login')
+    .send({ email, password })
+    .expect(200);
+    
+  return response.body.data?.access_token || response.body.access_token;
+}
 }
