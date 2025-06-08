@@ -29,5 +29,4 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Document, (document) => document.uploadedBy)
   documents: Document[];
-
 }
