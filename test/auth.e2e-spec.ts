@@ -13,9 +13,9 @@ describe('AuthController (e2e)', () => {
   let dataSource: DataSource;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+    const moduleFixture: TestingModule = await TestHelpers.createTestingModule([
+      AppModule,
+    ]);
 
     app = moduleFixture.createNestApplication();
 
@@ -37,7 +37,12 @@ describe('AuthController (e2e)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    try {
+      await TestHelpers.truncateAllTables(dataSource);
+      await app.close();
+    } catch (error) {
+      console.log('Database cleanup error:', error.message);
+    }
   });
 
   beforeEach(async () => {
@@ -61,7 +66,6 @@ describe('AuthController (e2e)', () => {
       const response = await request(app.getHttpServer())
         .post('/auth/register')
         .send(userData);
-
 
       // Check if we got the expected status first
       expect(response.status).toBe(201);
@@ -95,7 +99,7 @@ describe('AuthController (e2e)', () => {
 
     it('should return 409 for duplicate email', async () => {
       const userData = {
-        email: 'test@example.com',
+        email: 'test3@example.com',
         password: 'password123',
         firstName: 'Test',
         lastName: 'User',
@@ -123,7 +127,7 @@ describe('AuthController (e2e)', () => {
   describe('/auth/login (POST)', () => {
     it('should login with valid credentials', async () => {
       const userData = {
-        email: 'test@example.com',
+        email: 'test2@example.com',
         password: 'password123',
       };
 
