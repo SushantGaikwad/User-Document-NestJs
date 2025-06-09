@@ -1,28 +1,47 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# User Management and Document Management System
 
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Overiew
+The User Management and Document Management System is a NestJS server application, to allow users to create account and upload documents. There are three roles
+* **Admin** - Admin Can able to manage users, change roles, change permissions, etc
+* **Editor** - Editor can edit its own documents
+* **Viewer** - The Viewer can only view documents
 
-## Description
+## Features
+* Create User - User can enroll in the system by themselves or an Admin can add new users
+* Manage User - Admin can edit users' permissions and roles and if required remove user from system
+* Upload Documents - The User can upload documents (jpg, pdf, doc) into the system
 
-NestJS Project to handle users and Documents with proper Authentication
-
-## Prerequisite
-* Node Version 22.6.0
-* PostgreSQL
+## Tech Stack
+* Backend - NestJS + Typescript 
+* Database - PostgreSQL
+  
 
 ## Project setup
 
+### Prerequisite
+* Node Version 22.6.0
+* PostgreSQL
+
+## Steps to Setup Application Locally
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/SushantGaikwad/User-Document-NestJs.git
+   cd User-Document-NestJs
+   ```
+2. **Intall Dependecies**
 ```bash
 $ npm install
 ```
-  ### Setup .env file
-  You can copy .env.example variable and update with your original data
+
+3. Set up the PostgreSQL Database
+   ```bash
+   CREATE DATABASE document_management
+   CREATE DATABASE test_db
+   ```
+
+4. Set up .env files <br/>
+    a) **.env** - You can copy **.env.example** variable and update it with your original data
   ```bash
     # Database Configuration
       DB_HOST=localhost
@@ -43,8 +62,15 @@ $ npm install
       UPLOAD_DEST=./uploads
       MAX_FILE_SIZE=10485760
   ```
-  
-## Compile and run the project
+  b) **.env.test**
+  ```bash
+    TEST_DB_HOST=localhost
+    TEST_DB_PORT=5432
+    TEST_DB_USERNAME=postgres
+    TEST_DB_PASSWORD=your_password
+    TEST_DB_DATABASE=test_db
+  ```
+5. Compile and run the project
 
 ```bash
 # development
@@ -54,7 +80,7 @@ $ npm run start
 $ npm run start:dev
 ```
 
-## Run tests
+6. Run tests
 
 ```bash
 # unit tests
